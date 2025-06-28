@@ -143,20 +143,17 @@ const EVENT_MAP = {
   '.page-a .paper-content': {
     on: 'paste',
     action: formatText
-  },
-  '#paper-file': {
-    on: 'change',
-    action: (e) => addPaperFromFile(e.target.files[0])
   }
 };
 
 for (const eventSelector in EVENT_MAP) {
-  document
-    .querySelector(eventSelector)
-    .addEventListener(
+  const element = document.querySelector(eventSelector);
+  if (element) {
+    element.addEventListener(
       EVENT_MAP[eventSelector].on,
       EVENT_MAP[eventSelector].action
     );
+  }
 }
 
 /**
@@ -187,21 +184,24 @@ fetch(
 )
   .then((res) => res.json())
   .then((res) => {
-    document.querySelector('#project-contributors').innerHTML = res
-      .map(
-        (contributor) => /* html */ `
-        <div class="contributor-profile shadow">
-          <a href="${contributor.html_url}">
-            <img 
-              alt="GitHub avatar of contributor ${contributor.login}" 
-              class="contributor-avatar" 
-              loading="lazy" 
-              src="${contributor.avatar_url}" 
-            />
-            <div class="contributor-username">${contributor.login}</div>
-          </a>
-        </div>
-      `
-      )
-      .join('');
+    const contributorsElement = document.querySelector('#project-contributors');
+    if (contributorsElement) {
+      contributorsElement.innerHTML = res
+        .map(
+          (contributor) => /* html */ `
+          <div class="contributor-profile shadow">
+            <a href="${contributor.html_url}">
+              <img 
+                alt="GitHub avatar of contributor ${contributor.login}" 
+                class="contributor-avatar" 
+                loading="lazy" 
+                src="${contributor.avatar_url}" 
+              />
+              <div class="contributor-username">${contributor.login}</div>
+            </a>
+          </div>
+        `
+        )
+        .join('');
+    }
   });
